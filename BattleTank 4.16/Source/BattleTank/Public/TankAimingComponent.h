@@ -9,6 +9,7 @@
 // Forward declaration
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 
 // Enum for Aiming state
 UENUM()
@@ -34,7 +35,10 @@ public:
 
 	// TODO add SetTurrentReference
 	
-	void AimAt(FVector WorldSpaceAim, float LaunchSpeed);
+	void AimAt(FVector WorldSpaceAim);
+
+	UFUNCTION(BlueprintCallable)
+	void Fire();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
@@ -44,6 +48,17 @@ protected:
 	UTankTurret* Turret = nullptr;
 
 private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float ReloadTimeInSeconds = 3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float LaunchSpeed = 5000; // 500/s
+
+	double LastFireTime = 0;
 
 	void MoveBarrelTowards(FVector AimDirection);
 };
