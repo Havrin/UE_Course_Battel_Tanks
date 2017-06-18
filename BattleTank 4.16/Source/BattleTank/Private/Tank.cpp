@@ -11,13 +11,23 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+	CurrentHealth = StartingHealth;
+}
 
 float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser)
 {
 	int32 DamageToApply = FMath::Clamp<int32>(FPlatformMath::RoundToInt(DamageAmount), 0, CurrentHealth);
-	UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %i, CurrentHealth: %i"), DamageToApply, CurrentHealth);
 
 	CurrentHealth = CurrentHealth - DamageAmount;
+
+	if (CurrentHealth <= 0)
+	{
+		OnTankDeath.Broadcast();
+	}
+
 	return DamageAmount;
 }
 
